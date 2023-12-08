@@ -2,4 +2,3 @@ elevenlabs
 streamlit
 python-dotenv
 streamlit-audiorecorder
-mpv
