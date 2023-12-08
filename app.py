@@ -8,12 +8,21 @@ from dotenv import load_dotenv
 import os
 
 # Load your API key from an environment variable or secret management service
-load_dotenv()  # take environment variables from .env
+#load_dotenv()  # take environment variables from .env
 
 # Set the API key
-elevanlabkey = os.environ["elevenlabs-api-key"]
+#elevanlabkey = os.environ["elevenlabs-api-key"]
 
 #set_api_key()
+
+# Everything is accessible via the st.secrets dict:
+st.write("elevenlabs-api-key:", st.secrets["elevenlabs-api-key"])
+
+# And the root-level secrets are also accessible as environment variables:
+st.write(
+    "Has environment variables been set:",
+    os.environ["elevenlabs-api-key"] == st.secrets["elevenlabs-api-key"],
+)
 
 def get_voices():
     all_voices = voices()
