@@ -14,16 +14,6 @@ import os
 #elevanlabkey = os.environ["elevenlabs-api-key"]
 os.environ["ELEVEN_API_KEY"] == st.secrets["ELEVEN_API_KEY"]
 
-#set_api_key("elevenlabs-api-key")
-
-# Everything is accessible via the st.secrets dict:
-#st.write("elevenlabs-api-key:", st.secrets["elevenlabs-api-key"])
-
-# And the root-level secrets are also accessible as environment variables:
-st.write(
-    "Has environment variables been set:",
-    os.environ["ELEVEN_API_KEY"] == st.secrets["ELEVEN_API_KEY"],
-)
 
 def get_voices():
     all_voices = voices()
