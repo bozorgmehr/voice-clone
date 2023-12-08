@@ -13,7 +13,7 @@ import os
 # Set the API key
 #elevanlabkey = os.environ["elevenlabs-api-key"]
 
-#set_api_key()
+set_api_key("elevenlabs-api-key")
 
 # Everything is accessible via the st.secrets dict:
 #st.write("elevenlabs-api-key:", st.secrets["elevenlabs-api-key"])
