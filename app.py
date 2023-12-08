@@ -12,6 +12,7 @@ import os
 
 # Set the API key
 #elevanlabkey = os.environ["elevenlabs-api-key"]
+os.environ["ELEVEN_API_KEY"] == st.secrets["ELEVEN_API_KEY"]
 
 #set_api_key("elevenlabs-api-key")
 
