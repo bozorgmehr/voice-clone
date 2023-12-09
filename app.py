@@ -73,7 +73,7 @@ if __name__ == "__main__":
                 submitted_file = st.form_submit_button("Submit")
                 if submitted_file:
                     st.audio(voice_custom("Na na! Se não ficamos sem quota! Usar para já apenas o texto.", voice_name=voice_selection))
-                    st.write(open(str(text), 'rt'))
+                    #st.write(open(str(text), 'rt'))
                     #st.audio(voice_custom('./Final.txt', voice_name=voice_selection))
         else:
             with st.form("Info", clear_on_submit=True):
@@ -82,7 +82,7 @@ if __name__ == "__main__":
                 if submitted_text:
                     st.audio(voice_custom(final_text, voice_name=voice_selection))
     else:
-        new_voice_name = st.text_area('Name')
+        new_voice_name = st.text_area('Voice Name')
 
         description = st.text_area("Ler este texto. Se quiser editar, coloque outro texto.",
         "It was the best of times, it was the worst of times, it was the age of "
