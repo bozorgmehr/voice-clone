@@ -1,19 +1,23 @@
 import streamlit as st
 from voiceclone import *
-from elevenlabs import set_api_key, voices
+from pdfreading import *
+from elevenlabs import voices, set_api_key
 from audiorecorder import audiorecorder
 import re
 import numpy as np
 from dotenv import load_dotenv
 import os
+import tempfile
+import fitz
 
 # Load your API key from an environment variable or secret management service
-#load_dotenv()  # take environment variables from .env
+load_dotenv()  # take environment variables from .env
 
 # Set the API key
-#elevanlabkey = os.environ["elevenlabs-api-key"]
-os.environ["ELEVEN_API_KEY"] == st.secrets["ELEVEN_API_KEY"]
+set_api_key("7cbe591f5982171ee2adb23d29204db2")
+#os.environ["ELEVEN_API_KEY"] == st.secrets["ELEVEN_API_KEY"]
 
+#set_api_key()
 
 def get_voices():
     all_voices = voices()
@@ -46,12 +50,37 @@ if __name__ == "__main__":
 
     if action == 'Create a text with a available voice':
 
-        with st.form("Info", clear_on_submit=True):
-            text = st.text_area('Type here the text you want.', max_chars=5000)
-            voice_selection = st.selectbox("Select a voice", get_voices())
-            submitted = st.form_submit_button("Submit")
-            if submitted:
-                st.audio(voice_custom(text, voice_name=voice_selection))
+        voice_selection = st.selectbox("Select a voice", get_voices())
+        text_selection = st.selectbox("Select the source", ['Upload pdf', "Writing text."])
+
+        if text_selection == 'Upload pdf':
+            with st.form("Info", clear_on_submit=True):
+                uploaded_file = st.file_uploader('Choose your .pdf file', type="pdf")
+                if uploaded_file is not None:
+                    temp_dir = tempfile.mkdtemp()
+                    path = os.path.join(temp_dir, uploaded_file.name)
+                    print(path)
+                    with open(path, "wb") as f:
+                        f.write(uploaded_file.getvalue())
+                        # To convert to a string based IO:
+                        doc = fitz.open(f)
+                        font_counts, styles = fonts(doc, granularity=False)
+                        size_tag = font_tags(font_counts, styles)
+                        text = headers_para(doc, size_tag)
+                        # save to file
+                        np.savetxt("Final.txt", text, fmt='%s')
+                        #new_text = ""
+                        #final_text = open(str(text), 'rt')
+                submitted_file = st.form_submit_button("Submit")
+                if submitted_file:
+                    st.audio(voice_custom("Na na! Se não ficamos sem quota! Usar para já apenas o texto.", voice_name=voice_selection))
+                    #st.audio(voice_custom('./Final.txt', voice_name=voice_selection))
+        else:
+            with st.form("Info", clear_on_submit=True):
+                final_text = st.text_area('Type here the text you want.', max_chars=5000)
+                submitted_text = st.form_submit_button("Submit")
+                if submitted_text:
+                    st.audio(voice_custom(final_text, voice_name=voice_selection))
     else:
         new_voice_name = st.text_area('Name')
 
@@ -86,6 +115,3 @@ if __name__ == "__main__":
 
                     if text_new:
                         st.audio(voice_custom(text_new, voice_name=new_voice_name))
-
-
-
