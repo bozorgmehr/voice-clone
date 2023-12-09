@@ -19,6 +19,8 @@ import pydub
 
 # Set the API key
 os.environ["ELEVEN_API_KEY"] == st.secrets["ELEVEN_API_KEY"]
+os.environ["OPENAI_API_KEY"] == st.secrets["OPENAI_API_KEY"]
+
 client = OpenAI()
 
 languages = ["English", "Portuguese-PT", "Chinese", "German", "French", "Spanish"]
