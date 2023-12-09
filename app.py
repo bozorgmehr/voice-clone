@@ -7,7 +7,6 @@ from elevenlabs import voices, set_api_key
 from audiorecorder import audiorecorder
 import re
 import numpy as np
-from dotenv import load_dotenv
 import os
 import tempfile
 import fitz
@@ -20,8 +19,8 @@ import pydub
 # Set the API key
 os.environ["ELEVEN_API_KEY"] == st.secrets["ELEVEN_API_KEY"]
 os.environ["OPENAI_API_KEY"] == st.secrets["OPENAI_API_KEY"]
-
 client = OpenAI()
+
 
 languages = ["English", "Portuguese-PT", "Chinese", "German", "French", "Spanish"]
 
@@ -131,36 +130,70 @@ if __name__ == "__main__":
 
 
     else:
+
         new_voice_name = st.text_area('Name')
 
-        description = st.text_area("Ler este texto. Se quiser editar, coloque outro texto.",
-        "It was the best of times, it was the worst of times, it was the age of "
-        "wisdom, it was the age of foolishness, it was the epoch of belief, it "
-        "was the epoch of incredulity, it was the season of Light, it was the "
-        "season of Darkness, it was the spring of hope, it was the winter of "
-        "despair, (...)")  # Optional
+        action_create = st.radio(
+            "What do you want to do?",
+            ["Record a voice", "Clone using a audio file"],
+            captions=["Great!", "Amazinhg"])
 
-        if description:
+        if action_create == "Record a voice":
 
-            audio = audiorecorder("Click to record", "Click to stop recording")
+            description = st.text_area("Ler este texto. Se quiser editar, coloque outro texto.",
+            "It was the best of times, it was the worst of times, it was the age of "
+            "wisdom, it was the age of foolishness, it was the epoch of belief, it "
+            "was the epoch of incredulity, it was the season of Light, it was the "
+            "season of Darkness, it was the spring of hope, it was the winter of "
+            "despair, (...)")  # Optional
 
-            if len(audio) > 0:
-                # To play audio in frontend:
-                st.audio(audio.export().read())
+            if description:
 
-                # To save audio to a file, use pydub export method:
-                audio.export("audio.wav", format="wav")
+                audio = audiorecorder("Click to record", "Click to stop recording")
 
-                # To get audio properties, use pydub AudioSegment properties:
-                st.write(
-                    f"Frame rate: {audio.frame_rate}, Frame width: {audio.frame_width}, Duration: {audio.duration_seconds} seconds")
+                if len(audio) > 0:
+                    # To play audio in frontend:
+                    st.audio(audio.export().read())
 
-                files = ['./audio.wav']
+                    # To save audio to a file, use pydub export method:
+                    audio.export("audio.wav", format="wav")
 
-                new_voice = voice_clone(new_voice_name, 'A custom voice', files)
+                    # To get audio properties, use pydub AudioSegment properties:
+                    st.write(
+                        f"Frame rate: {audio.frame_rate}, Frame width: {audio.frame_width}, Duration: {audio.duration_seconds} seconds")
 
-                if new_voice:
-                    text_new = st.text_input('Type here the text you want.')
+                    files = ['./audio.wav']
 
-                    if text_new:
-                        st.audio(voice_custom(text_new, voice_name=new_voice_name))
+                    new_voice = voice_clone(new_voice_name, 'A custom voice', files)
+
+                    if new_voice:
+                        text_new = st.text_input('Type here the text you want.')
+
+                        if text_new:
+                            st.audio(voice_custom(text_new, voice_name=new_voice_name))
+
+        else:
+            with st.form("Info", clear_on_submit=True):
+                uploaded_audio_voice = st.file_uploader('Choose your audio file', type=["mp3","wav"])
+                if uploaded_audio_voice:
+                    if uploaded_audio_voice.name.endswith('wav'):
+                        audio_new_voice = pydub.AudioSegment.from_wav(uploaded_audio_voice)
+                        audio_new_voice.export("audio_new_voice.wav", format="wav")
+                        audio_file_voice = open("audio_new_voice.wav", "rb")
+                        transcript_voice = genai.speech2text(audio_file_voice)
+                        file = ['./audio_new_voice.wav']
+                        voice_clone(new_voice_name, 'A custom voice', file)
+                        st.write(transcript_voice)
+                    else:
+                        audio_new_voice = pydub.AudioSegment.from_wav(uploaded_audio_voice)
+                        audio_new_voice.export("audio_new_voice.mp3", format="mp3")
+                        audio_file_voice = open("audio_new_voice.mp3", "rb")
+                        transcript_voice = genai.speech2text(audio_file_voice)
+                        file = ['./audio_new_voice.mp3']
+                        voice_clone(new_voice_name, 'A custom voice', file)
+                        st.write(transcript_voice)
+
+                submitted_voice = st.form_submit_button("Submit")
+                if submitted_voice:
+                    st.audio(voice_custom(transcript_voice, voice_name=new_voice_name))
+                    st.write(transcript_voice)
