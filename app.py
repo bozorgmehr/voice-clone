@@ -1,4 +1,6 @@
 import streamlit as st
+
+import genai
 from voiceclone import *
 from pdfreading import *
 from elevenlabs import voices, set_api_key
@@ -10,13 +12,16 @@ import os
 import tempfile
 import fitz
 from openai import OpenAI
+import pydub
 
 # Load your API key from an environment variable or secret management service
-# load_dotenv()  # take environment variables from .env
+#load_dotenv()  # take environment variables from .env
 
 # Set the API key
-#os.environ["ELEVEN_API_KEY"] == st.secrets["ELEVEN_API_KEY"]
+os.environ["ELEVEN_API_KEY"] == st.secrets["ELEVEN_API_KEY"]
 client = OpenAI()
+
+languages = ["English", "Portuguese-PT", "Chinese", "German", "French", "Spanish"]
 
 def get_voices():
     all_voices = voices()
@@ -50,7 +55,7 @@ if __name__ == "__main__":
     if action == 'Create a text with a available voice':
 
         voice_selection = st.selectbox("Select a voice", get_voices())
-        text_selection = st.selectbox("Select the source", ['Upload pdf', "Writing text"])
+        text_selection = st.selectbox("Select the source", ["Writing text", 'Upload audio', 'Upload pdf'])
 
         if text_selection == 'Upload pdf':
             with st.form("Info", clear_on_submit=True):
@@ -75,28 +80,52 @@ if __name__ == "__main__":
                     st.audio(voice_custom("Na na! Se não ficamos sem quota! Usar para já apenas o texto.", voice_name=voice_selection))
                     st.write(open(str(text), 'rt'))
                     #st.audio(voice_custom('./Final.txt', voice_name=voice_selection))
-        else:
+        elif text_selection == 'Writing text':
             with st.form("Info", clear_on_submit=True):
                 final_text = st.text_area('Type here the text you want.', max_chars=5000)
                 translate_on = st.toggle('Translate')
-                if translate_on:
-                    translation = st.selectbox("Select the language to translate audio", ["EN", "PT"])
-                    completion = client.chat.completions.create(
-                        model="gpt-3.5-turbo",
-                        messages=[
-                            {"role": "system",
-                             "content": "You are a translater"},
-                            {"role": "user",
-                             "content": "Translate the text in" + translation + final_text}
-                        ]
-                    )
-                    final_text_tran = completion.choices[0].message.content
+                if translate_on is not None:
+                    translation = st.selectbox("Select the language to translate audio", languages)
+                    final_text_tran = genai.translate(translation, final_text)
                 submitted_text = st.form_submit_button("Submit")
                 if submitted_text and translate_on:
                     st.audio(voice_custom(final_text_tran, voice_name=voice_selection))
                     st.write(final_text_tran)
                 elif submitted_text:
                     st.audio(voice_custom(final_text, voice_name=voice_selection))
+                else:
+                    st.write("Provide a text.")
+        else:
+            with st.form("Info", clear_on_submit=True):
+                uploaded_file = st.file_uploader('Choose your audio file', type=["mp3","wav"])
+                translate_on_audio = st.toggle('Translate')
+                if translate_on_audio is not None:
+                    translation_audio = st.selectbox("Select the language to translate audio", languages)
+                if uploaded_file and translate_on_audio:
+                    if uploaded_file.name.endswith('wav'):
+                        audio = pydub.AudioSegment.from_wav(uploaded_file)
+                        audio.export("audio_text.wav", format="wav")
+                        audio_file = open("audio_text.wav", "rb")
+                        transcript_original = genai.speech2text(audio_file)
+                        transcript = genai.translate(translation_audio, transcript_original)
+                    elif uploaded_file.name.endswith('mp3'):
+                        audio = pydub.AudioSegment.from_mp3(uploaded_file)
+                        audio.export("audio_text.mp3", format="mp3")
+                        audio_file = open("audio_text.mp3", "rb")
+                        transcript = genai.speech2text(audio_file)
+                        transcript_original = genai.speech2text(audio_file)
+                        transcript = genai.translate(translation_audio, transcript_original)
+                elif uploaded_file:
+                    audio = pydub.AudioSegment.from_wav(uploaded_file)
+                    audio.export("audio_text.wav", format="wav")
+                    audio_file = open("audio_text.wav", "rb")
+                    transcript = genai.speech2text(audio_file)
+                else:
+                    st.write("Upload an audio file.")
+                submitted_audio = st.form_submit_button("Submit")
+                if submitted_audio:
+                    st.audio(voice_custom(transcript, voice_name=voice_selection))
+                    st.write(transcript)
 
 
     else:
