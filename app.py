@@ -11,11 +11,10 @@ import tempfile
 import fitz
 
 # Load your API key from an environment variable or secret management service
-load_dotenv()  # take environment variables from .env
+#load_dotenv()  # take environment variables from .env
 
 # Set the API key
-set_api_key("7cbe591f5982171ee2adb23d29204db2")
-#os.environ["ELEVEN_API_KEY"] == st.secrets["ELEVEN_API_KEY"]
+os.environ["ELEVEN_API_KEY"] == st.secrets["ELEVEN_API_KEY"]
 
 #set_api_key()
 
