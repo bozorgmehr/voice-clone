@@ -51,7 +51,7 @@ if __name__ == "__main__":
             voice_selection = st.selectbox("Select a voice", get_voices())
             submitted = st.form_submit_button("Submit")
             if submitted:
-                st.audio(stream_audio(text, voice_name=voice_selection))
+                st.audio(voice_custom(text, voice_name=voice_selection))
     else:
         new_voice_name = st.text_area('Name')
 
@@ -85,7 +85,7 @@ if __name__ == "__main__":
                     text_new = st.text_input('Type here the text you want.')
 
                     if text_new:
-                        st.audio(stream_audio(text_new, voice_name=new_voice_name))
+                        st.audio(voice_custom(text_new, voice_name=new_voice_name))
 
 
 
