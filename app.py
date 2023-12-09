@@ -185,7 +185,7 @@ if __name__ == "__main__":
                         voice_clone(new_voice_name, 'A custom voice', file)
                         st.write(transcript_voice)
                     else:
-                        audio_new_voice = pydub.AudioSegment.from_wav(uploaded_audio_voice)
+                        audio_new_voice = pydub.AudioSegment.from_mp3(uploaded_audio_voice)
                         audio_new_voice.export("audio_new_voice.mp3", format="mp3")
                         audio_file_voice = open("audio_new_voice.mp3", "rb")
                         transcript_voice = genai.speech2text(audio_file_voice)
