@@ -9,14 +9,14 @@ from dotenv import load_dotenv
 import os
 import tempfile
 import fitz
+from openai import OpenAI
 
 # Load your API key from an environment variable or secret management service
-#load_dotenv()  # take environment variables from .env
+# load_dotenv()  # take environment variables from .env
 
 # Set the API key
-os.environ["ELEVEN_API_KEY"] == st.secrets["ELEVEN_API_KEY"]
-
-#set_api_key()
+#os.environ["ELEVEN_API_KEY"] == st.secrets["ELEVEN_API_KEY"]
+client = OpenAI()
 
 def get_voices():
     all_voices = voices()
@@ -50,7 +50,7 @@ if __name__ == "__main__":
     if action == 'Create a text with a available voice':
 
         voice_selection = st.selectbox("Select a voice", get_voices())
-        text_selection = st.selectbox("Select the source", ['Upload pdf', "Writing text."])
+        text_selection = st.selectbox("Select the source", ['Upload pdf', "Writing text"])
 
         if text_selection == 'Upload pdf':
             with st.form("Info", clear_on_submit=True):
@@ -73,16 +73,34 @@ if __name__ == "__main__":
                 submitted_file = st.form_submit_button("Submit")
                 if submitted_file:
                     st.audio(voice_custom("Na na! Se não ficamos sem quota! Usar para já apenas o texto.", voice_name=voice_selection))
-                    #st.write(open(str(text), 'rt'))
+                    st.write(open(str(text), 'rt'))
                     #st.audio(voice_custom('./Final.txt', voice_name=voice_selection))
         else:
             with st.form("Info", clear_on_submit=True):
                 final_text = st.text_area('Type here the text you want.', max_chars=5000)
+                translate_on = st.toggle('Translate')
+                if translate_on:
+                    translation = st.selectbox("Select the language to translate audio", ["EN", "PT"])
+                    completion = client.chat.completions.create(
+                        model="gpt-3.5-turbo",
+                        messages=[
+                            {"role": "system",
+                             "content": "You are a translater"},
+                            {"role": "user",
+                             "content": "Translate the text in" + translation + final_text}
+                        ]
+                    )
+                    final_text_tran = completion.choices[0].message.content
                 submitted_text = st.form_submit_button("Submit")
-                if submitted_text:
+                if submitted_text and translate_on:
+                    st.audio(voice_custom(final_text_tran, voice_name=voice_selection))
+                    st.write(final_text_tran)
+                elif submitted_text:
                     st.audio(voice_custom(final_text, voice_name=voice_selection))
+
+
     else:
-        new_voice_name = st.text_area('Voice Name')
+        new_voice_name = st.text_area('Name')
 
         description = st.text_area("Ler este texto. Se quiser editar, coloque outro texto.",
         "It was the best of times, it was the worst of times, it was the age of "
