@@ -1,8 +1,12 @@
 from openai import OpenAI
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 
 # Load your API key from an environment variable or secret management service
-load_dotenv()  # take environment variables from .env
+#load_dotenv()  # take environment variables from .env
+
+# Set the API key
+os.environ["ELEVEN_API_KEY"] == st.secrets["ELEVEN_API_KEY"]
+os.environ["OPENAI_API_KEY"] == st.secrets["OPENAI_API_KEY"]
 
 client = OpenAI()
 
