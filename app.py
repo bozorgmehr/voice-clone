@@ -75,10 +75,10 @@ if __name__ == "__main__":
                         # save to file
                         np.savetxt("Final.txt", text, fmt='%s')
                         new_text = []
-                        final_text = str(text)
-                        for i in arange(len(final_text)):
-                            if final_text[i] != "":
-                                new_text = new_text.append(final_text[i])
+                        #final_text = str(text)
+                        for i in arange(len(text)):
+                            if text[i] != "":
+                                new_text = new_text.append(text[i])
                         st.write(len(new_text))
                 submitted_file = st.form_submit_button("Submit")
                 if submitted_file:
