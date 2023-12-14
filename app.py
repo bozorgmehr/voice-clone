@@ -79,11 +79,12 @@ if __name__ == "__main__":
                         for i in np.arange(len(text)):
                             if text[i] != "":
                                 new_text.append(text[i])
-                        st.write(len(new_text))
+                        final_text=''.join(new_text)
+                        st.write(len(final_text))
                 submitted_file = st.form_submit_button("Submit")
                 if submitted_file:
                     #st.audio(voice_custom(str(final_text), voice_name=voice_selection))
-                    st.write(new_text)
+                    st.write(final_text)
                     #st.audio(voice_custom('./Final.txt', voice_name=voice_selection))
         elif text_selection == 'Writing text':
             with st.form("Info", clear_on_submit=True):
