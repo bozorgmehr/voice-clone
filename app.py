@@ -76,9 +76,10 @@ if __name__ == "__main__":
                         np.savetxt("Final.txt", text, fmt='%s')
                         #new_text = ""
                         final_text = text[0:100]
+                        print(len(final_text))
                 submitted_file = st.form_submit_button("Submit")
                 if submitted_file:
-                    st.audio(voice_custom(str(final_text), voice_name=voice_selection))
+                    #st.audio(voice_custom(str(final_text), voice_name=voice_selection))
                     st.write(final_text)
                     #st.audio(voice_custom('./Final.txt', voice_name=voice_selection))
         elif text_selection == 'Writing text':
