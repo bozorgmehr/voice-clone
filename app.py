@@ -75,11 +75,11 @@ if __name__ == "__main__":
                         # save to file
                         np.savetxt("Final.txt", text, fmt='%s')
                         #new_text = ""
-                        #final_text = open(str(text), 'rt')
+                        final_text = text[0:5000]
                 submitted_file = st.form_submit_button("Submit")
                 if submitted_file:
                     st.audio(voice_custom("Na na! Se não ficamos sem quota! Usar para já apenas o texto.", voice_name=voice_selection))
-                    st.write(open(str(text), 'rt'))
+                    st.write(final_text)
                     #st.audio(voice_custom('./Final.txt', voice_name=voice_selection))
         elif text_selection == 'Writing text':
             with st.form("Info", clear_on_submit=True):
