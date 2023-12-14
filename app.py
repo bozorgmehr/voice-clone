@@ -76,7 +76,7 @@ if __name__ == "__main__":
                         np.savetxt("Final.txt", text, fmt='%s')
                         new_text = []
                         #final_text = str(text)
-                        for i in arange(len(text)):
+                        for i in np.arange(len(text)):
                             if text[i] != "":
                                 new_text = new_text.append(text[i])
                         st.write(len(new_text))
