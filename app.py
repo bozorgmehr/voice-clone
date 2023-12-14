@@ -78,7 +78,7 @@ if __name__ == "__main__":
                         #final_text = str(text)
                         for i in np.arange(len(text)):
                             if text[i] != "":
-                                new_text = new_text.np.append(text[i])
+                                new_text = np.append(text[i])
                         st.write(len(new_text))
                 submitted_file = st.form_submit_button("Submit")
                 if submitted_file:
