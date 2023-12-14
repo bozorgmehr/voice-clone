@@ -76,7 +76,6 @@ if __name__ == "__main__":
                         np.savetxt("Final.txt", text, fmt='%s')
                         #new_text = ""
                         final_text = str(text[:100])
-                        final_text = final_text.strip()
                         st.write(len(final_text))
                 submitted_file = st.form_submit_button("Submit")
                 if submitted_file:
