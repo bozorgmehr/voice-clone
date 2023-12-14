@@ -74,9 +74,12 @@ if __name__ == "__main__":
                         text = headers_para(doc, size_tag)
                         # save to file
                         np.savetxt("Final.txt", text, fmt='%s')
-                        #new_text = ""
+                        new_text = []
                         final_text = str(text)
-                        st.write(len(final_text))
+                        for i in arange(len(final_text)):
+                            if final_text[i] =! "":
+                                new_text = new_text.append(final_text[i])
+                        st.write(len(new_text))
                 submitted_file = st.form_submit_button("Submit")
                 if submitted_file:
                     #st.audio(voice_custom(str(final_text), voice_name=voice_selection))
