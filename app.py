@@ -77,7 +77,7 @@ if __name__ == "__main__":
                         new_text = []
                         final_text = str(text)
                         for i in arange(len(final_text)):
-                            if final_text[i] =! "":
+                            if final_text[i] != "":
                                 new_text = new_text.append(final_text[i])
                         st.write(len(new_text))
                 submitted_file = st.form_submit_button("Submit")
