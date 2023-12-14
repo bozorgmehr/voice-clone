@@ -75,7 +75,7 @@ if __name__ == "__main__":
                         # save to file
                         np.savetxt("Final.txt", text, fmt='%s')
                         #new_text = ""
-                        final_text = text[0:5000]
+                        final_text = text[0:100]
                 submitted_file = st.form_submit_button("Submit")
                 if submitted_file:
                     #st.audio(voice_custom(str(final_text), voice_name=voice_selection))
