@@ -84,7 +84,7 @@ if __name__ == "__main__":
                         st.write(len(final_text_limit))
                 submitted_file = st.form_submit_button("Submit")
                 if submitted_file:
-                    #st.audio(voice_custom(str(final_text), voice_name=voice_selection))
+                    st.audio(voice_custom(final_text_limit, voice_name=voice_selection))
                     st.write(final_text_limit)
                     #st.audio(voice_custom('./Final.txt', voice_name=voice_selection))
         elif text_selection == 'Writing text':
