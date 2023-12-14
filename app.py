@@ -80,11 +80,12 @@ if __name__ == "__main__":
                             if text[i] != "":
                                 new_text.append(text[i])
                         final_text=''.join(new_text)
-                        st.write(len(final_text))
+                        final_text_limit = final_text[:4999]
+                        st.write(len(final_text_limit))
                 submitted_file = st.form_submit_button("Submit")
                 if submitted_file:
                     #st.audio(voice_custom(str(final_text), voice_name=voice_selection))
-                    st.write(final_text)
+                    st.write(final_text_limit)
                     #st.audio(voice_custom('./Final.txt', voice_name=voice_selection))
         elif text_selection == 'Writing text':
             with st.form("Info", clear_on_submit=True):
